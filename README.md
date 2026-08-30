@@ -32,7 +32,7 @@ git clone https://github.com/EriksUzans/Longoo.git
 cd Longoo
 
 ## Install dependencies:
-```bash
+
 npm install
 
 ### Running Tests
