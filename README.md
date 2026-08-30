@@ -51,5 +51,6 @@ npx cypress run --spec "longo.spec.js"
 
 ## Parallel & Cloud Execution
 Run tests in parallel across multiple CI machines using Cypress Cloud recording:
+```bash
 npx cypress run --record --key [KEY] --parallel --ci-build-id local-build-$(Get-Date -UFormat %s)
 Note
