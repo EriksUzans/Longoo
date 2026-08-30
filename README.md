@@ -19,24 +19,24 @@ Automated Cypress test suite for verifying core catalog filtering, vehicle detai
 
 ---
 
-##Prerequisites
+## Prerequisites
 Node.js: v18 or higher recommended (v16+ supported)
 npm: v8 or higher
 Git: Installed and configured
 
-##Installation
+## Installation
 Clone the repository:
 
 Bash
 git clone https://github.com/EriksUzans/Longoo.git
 cd Longoo
 
-##Install dependencies:
+## Install dependencies:
 
 Bash
 npm install
 
-##Running Tests
+## Running Tests
 1. Interactive Mode (Cypress Launchpad UI)
 Opens the Cypress Test Runner to debug tests visually:
 
@@ -52,7 +52,7 @@ Run a specific test file:
 Bash
 npx cypress run --spec "longo.spec.js"
 
-##Parallel & Cloud Execution
+## Parallel & Cloud Execution
 Run tests in parallel across multiple CI machines using Cypress Cloud recording:
 
 Bash
