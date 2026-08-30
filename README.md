@@ -19,34 +19,42 @@ Automated Cypress test suite for verifying core catalog filtering, vehicle detai
 
 ---
 
-## Prerequisites & Installation
+##Prerequisites
+Node.js: v18 or higher recommended (v16+ supported)
+npm: v8 or higher
+Git: Installed and configured
 
-Ensure you have **Node.js** (v16+) installed.
+##Installation
+Clone the repository:
 
-1. Clone the repository:
-   ```bash
-   git clone <repository-url>
-   cd <repository-folder>
+Bash
+git clone https://github.com/EriksUzans/Longoo.git
+cd Longoo
 
+##Install dependencies:
 
+Bash
+npm install
 
-## Install dependencies:
+##Running Tests
+1. Interactive Mode (Cypress Launchpad UI)
+Opens the Cypress Test Runner to debug tests visually:
 
-## Bash
-npm install cypress --save-dev
-How to Run the Tests
-Run tests headlessly (CLI):
-
-## Bash
-npx cypress run
-Run tests headlessly for a specific spec:
-
-## Bash
-npx cypress run --spec "cypress/e2e/longo.spec.js"
-Open Cypress UI Runner (Interactive):
-
-## Bash
+Bash
 npx cypress open
+2. Headless Mode (Command Line / CI)
+Runs all test specs headlessly in the background:
 
-## Parallel execution
-npx cypress run --record --key a3948887-7b88-4bfc-b097-ee902895b0a9 --parallel --ci-build-id local-build-001
+Bash
+npx cypress run
+Run a specific test file:
+
+Bash
+npx cypress run --spec "longo.spec.js"
+
+##Parallel & Cloud Execution
+Run tests in parallel across multiple CI machines using Cypress Cloud recording:
+
+Bash
+npx cypress run --record --key a3948887-7b88-4bfc-b097-ee902895b0a9 --parallel --ci-build-id local-build-$(Get-Date -UFormat %s)
+Note
