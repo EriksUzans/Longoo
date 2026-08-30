@@ -27,27 +27,27 @@ Git: Installed and configured
 ## Installation
 Clone the repository:
 
-
+```bash
 git clone https://github.com/EriksUzans/Longoo.git
 cd Longoo
-
+```
 ## Install dependencies:
-
+```bash
 npm install
-
+```
 ### Running Tests
 
 #### 1. Interactive Mode (Cypress Launchpad UI)
 Opens the Cypress Test Runner to debug tests visually:
 ```bash
 npx cypress open
-
+```
 
 ## 2. Headless Mode (Command Line / CI)
 Runs all test specs headlessly in the background:
 ```bash
 npx cypress run
-
+```
 ## Run a specific test file:
 npx cypress run --spec "longo.spec.js"
 
@@ -55,4 +55,4 @@ npx cypress run --spec "longo.spec.js"
 Run tests in parallel across multiple CI machines using Cypress Cloud recording:
 ```bash
 npx cypress run --record --key [KEY] --parallel --ci-build-id local-build-$(Get-Date -UFormat %s)
-Note
+```
