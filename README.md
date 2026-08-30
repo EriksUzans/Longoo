@@ -49,8 +49,9 @@ Runs all test specs headlessly in the background:
 npx cypress run
 ```
 ## Run a specific test file:
+```bash
 npx cypress run --spec "longo.spec.js"
-
+```
 ## Parallel & Cloud Execution
 Run tests in parallel across multiple CI machines using Cypress Cloud recording:
 ```bash
