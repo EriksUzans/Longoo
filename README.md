@@ -36,11 +36,15 @@ cd Longoo
 Bash
 npm install
 
-## Running Tests
-1. Interactive Mode (Cypress Launchpad UI)
+### Running Tests
+
+#### 1. Interactive Mode (Cypress Launchpad UI)
 Opens the Cypress Test Runner to debug tests visually:
 
-Bash
+```bash
+npx cypress open
+
+```bash
 npx cypress open
 2. Headless Mode (Command Line / CI)
 Runs all test specs headlessly in the background:
@@ -49,7 +53,7 @@ Bash
 npx cypress run
 Run a specific test file:
 
-Bash
+```bash
 npx cypress run --spec "longo.spec.js"
 
 ## Parallel & Cloud Execution
