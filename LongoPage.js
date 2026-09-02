@@ -5,6 +5,9 @@ class LongoPage {
     filterSection: '.filter-section',
     filterSectionTitle: '.filter-section__title',
     filterShowBtn: 'button',
+    priceToSelect: '.filter-select:has(.filter-select__label:contains("līdz")) select.filter-select__select',
+    priceToInput: 'input[name="price_to"]',
+    resultsCount: 'span.list-header__count',
     vehicleCard: '.catalog-page__content .vehicle-card-item-wrapper',
     cardTitle: '.vehicle-card-item__title',
     cardPrice: '.vehicle-card-item__price-value--full',
@@ -17,9 +20,12 @@ class LongoPage {
   labels = {
     cookieAccept: 'Atļaut visu',
     makeSection: 'Marka',
+    priceSection: 'Cena',
+    maxPriceLabel: 'līdz',
     bodyTypeSection: 'Virsbūves tips',
     showResultsBtn: 'Rādīt',
     kmUnit: 'km',
+    zeroResults: '0 rezultāti',
     ruBuy: 'Купить автомобиль',
     ruFinancing: 'Лизинг и кредит',
     ruCalcText: 'расчёт',
@@ -35,6 +41,7 @@ class LongoPage {
     vehicle: '**/api/longo/longo-lv/catalog/vehicle/*',
   };
 
+  // --- Navigation Methods ---
   visitCatalog() {
     cy.visit('/automasinu-katalogs');
   }
@@ -44,25 +51,26 @@ class LongoPage {
   }
 
   closeCookiePopup() {
-    cy.setCookie('cookie_consent', 'true');
+  cy.setCookie('cookie_consent', 'true');
 
-    cy.get('body').then(($body) => {
-      if ($body.find(this.selectors.cookieBanner).length > 0) {
-        cy.get(this.selectors.cookieBanner)
-          .contains('button', this.labels.cookieAccept)
-          .click({ force: true });
-      }
+  cy.get('body').then(($body) => {
+    if ($body.find(this.selectors.cookieBanner).length > 0) {
+      cy.get(this.selectors.cookieBanner)
+        .contains('button', this.labels.cookieAccept)
+        .click({ force: true });
+    }
 
-      cy.window().then((win) => {
-        const banner = win.document.querySelector(this.selectors.cookieBanner);
-        if (banner) banner.remove();
-
-        const overlay = win.document.querySelector(this.selectors.cookieOverlay);
-        if (overlay) overlay.remove();
-      });
+    // Forcefully remove any leftover cookie containers/overlays from the DOM
+    cy.window().then((win) => {
+      const elementsToRemove = win.document.querySelectorAll(
+        '#CookieBannerNotice, #CookieBannerOverlay, [class*="cookiebanner"]'
+      );
+      elementsToRemove.forEach((el) => el.remove());
     });
-  }
+  });
+}
 
+  // --- Filter Methods ---
   selectMake(make) {
     cy.contains(this.selectors.filterSection, this.labels.makeSection)
       .within(() => {
@@ -71,17 +79,41 @@ class LongoPage {
   }
 
   selectBodyType(bodyType) {
-    // 1. Click the Body Type filter accordion/header to reveal options
     cy.contains(this.selectors.filterSectionTitle, this.labels.bodyTypeSection)
       .scrollIntoView()
       .click({ force: true });
 
-    // 2. Target the specific label/option containing the body type text directly
     cy.contains(new RegExp(bodyType, 'i'))
       .scrollIntoView()
       .click({ force: true });
   }
+  verifyResultsCount(expectedText) {
+  // Ensure cookie overlay is removed if it reappeared
+  this.closeCookiePopup();
 
+  cy.get(this.selectors.resultsCount)
+    .scrollIntoView({ duration: 500 })
+    .should('exist')
+    .and('contain.text', expectedText);
+}
+  setMaxPrice(price) {
+  // 1. Ensure the "Cena" filter accordion is expanded
+  cy.contains(this.selectors.filterSectionTitle, this.labels.priceSection || 'Cena')
+    .closest(this.selectors.filterSection)
+    .then(($section) => {
+      if (!$section.hasClass('expanded')) {
+        cy.wrap($section).find(this.selectors.filterSectionTitle).click({ force: true });
+      }
+    });
+
+  // 2. Target the second select input inside "Cena" (0 = No/Min, 1 = līdz/Max)
+  cy.contains(this.selectors.filterSectionTitle, this.labels.priceSection || 'Cena')
+    .closest(this.selectors.filterSection)
+    .find('select.filter-select__select')
+    .eq(1)
+    .should('exist')
+    .select(String(price), { force: true });
+}
 
   clickShowResultsIfPresent() {
     cy.get('body').then(($body) => {
@@ -92,6 +124,18 @@ class LongoPage {
     });
   }
 
+  verifyResultsCount(expectedText) {
+  // 1. Re-trigger cookie banner cleanup to guarantee DOM clearance
+  this.closeCookiePopup();
+
+  // 2. Assert text existence directly on the DOM element without visual obstruction checks
+  cy.get(this.selectors.resultsCount)
+    .scrollIntoView()
+    .should('exist')
+    .and('contain.text', expectedText);
+}
+
+  // --- Catalog Vehicle Methods ---
   firstVehicleCard() {
     return cy.get(this.selectors.vehicleCard)
       .first()
@@ -99,7 +143,6 @@ class LongoPage {
   }
 
   clickFirstVehicle() {
-    // Extract the vehicle URL directly and visit it to guarantee SPA page transition
     cy.get(this.selectors.vehicleCard)
       .first()
       .find('a')
@@ -146,6 +189,7 @@ class LongoPage {
       });
   }
 
+  // --- Detail Page Methods ---
   getDetailTitle() {
     this.closeCookiePopup();
 
@@ -173,8 +217,8 @@ class LongoPage {
       .then((text) => text.replace(/\D/g, ''));
   }
 
+  // --- Locale and Utility Methods ---
   switchLanguage(langCode) {
-    // Matches hrefs containing /ru, /en, or default /
     const selector = langCode === '/' 
       ? `${this.selectors.localeSwitcher}:not([href*="/ru"]):not([href*="/en"])`
       : `${this.selectors.localeSwitcher}[href*="${langCode}"]`;
