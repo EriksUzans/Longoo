@@ -2,8 +2,15 @@ import LongoPage from './LongoPage';
 
 describe('Longo.lv - Test Suite', () => {
   beforeEach(() => {
+    // Clear session storage/cookies to ensure a clean state across all tests
+    cy.clearCookies();
+    cy.clearLocalStorage();
+    
     LongoPage.visitCatalog();
     LongoPage.closeCookiePopup();
+
+    // Ensure catalog filters DOM is fully loaded
+    cy.get(LongoPage.selectors.filterSection).should('be.visible');
   });
 
   // ============================================================
@@ -53,6 +60,20 @@ describe('Longo.lv - Test Suite', () => {
       });
     });
   });
+
+  // TEST 2: NEGATIVE / EMPTY STATE FILTERING
+  it('should display zero results empty state for BMW under 1000 EUR', () => {
+  LongoPage.closeCookiePopup();
+  LongoPage.selectMake('BMW');
+  LongoPage.setMaxPrice(1000);
+  LongoPage.clickShowResultsIfPresent();
+
+  LongoPage.verifyResultsCount(LongoPage.labels.zeroResults);
+});
+
+
+
+
 // ============================================================
   // TEST 3: LANGUAGE SWITCHING
   // ============================================================
@@ -158,6 +179,7 @@ it('should pass basic accessibility checks on catalog page', () => {
   // Log all WCAG failures to the command log without stopping the execution flow
   cy.checkA11y(null, null, null, true); 
 });
+
 
 
 
